@@ -8,12 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 
 @Configuration
@@ -32,6 +34,10 @@ public class RedisConfig {
     @Bean
     JedisConnectionFactory jedisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(redisHostName, redisPort);
+        // If the AWS elastic cahce is running on the cluster mode, then you can pass the primary node and can use RedisClusterConfiguration
+        // this will automatically find all the avilabale nodes and use them.
+        // https://stackoverflow.com/questions/59289359/how-to-connect-aws-elasticache-redis-cluster-to-spring-boot-app
+        //RedisClusterConfiguration redisStandaloneConfiguration= new RedisClusterConfiguration( Arrays.asList(new String[] {redisHostName+":"+redisPort}));
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
